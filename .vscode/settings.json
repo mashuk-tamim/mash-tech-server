@@ -1,0 +1,7 @@
+{
+    "files.autoSave": "afterDelay",
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#7a730d",
+        "statusBar.background": "#7a730d"
+    }
+}
