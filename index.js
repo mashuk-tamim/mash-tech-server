@@ -60,7 +60,7 @@ async function run() {
             res.send(result);
         });
 
-        app.patch('/products/:id', async(req, res) => {
+        app.put('/products/:id', async(req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id)};
             const options = { upsert: true };
@@ -76,6 +76,7 @@ async function run() {
                 },
             };
             const result = await productCollection.updateOne(query, product, options)
+            res.send(result);
         })
 
         app.get("/carts", async(req, res) => {
