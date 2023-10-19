@@ -14,7 +14,7 @@ app.use(express.json());
 console.log(process.env.DB_USER)
 
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri =
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.74novyu.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -63,6 +63,14 @@ async function run() {
             const newCart = req.body;
             console.log(newCart);
             const result = await cartCollection.insertOne(newCart);
+            res.send(result);
+        })
+
+        app.delete("/carts/:id", async(req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = {_id: `${id}`};
+            const result = await cartCollection.deleteOne(query);
             res.send(result);
         })
 
