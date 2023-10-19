@@ -34,10 +34,38 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
+        // Connect to the "insertDB" database and access its "haiku" collection
+        const database = client.db("mashTechDB");
+        const productCollection = database.collection("products");
+        const cartCollection = database.collection("carts");
 
 
+        app.get("/products", async(req, res) => {
+            const cursor = productCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
-        
+        app.post("/products", async (req, res) => {
+            const newProduct = req.body;
+            console.log(newProduct);
+            const result = await productCollection.insertOne(newProduct);
+            res.send(result);
+        });
+
+        app.get("/carts", async(req, res) => {
+            const cursor = cartCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.post("/carts", async(req, res) => {
+            const newCart = req.body;
+            console.log(newCart);
+            const result = await cartCollection.insertOne(newCart);
+            res.send(result);
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log(
