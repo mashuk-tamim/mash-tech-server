@@ -1,5 +1,5 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -8,15 +8,10 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// mashTech
-// zkfFPHPxFdpG8Bh4
-
-console.log(process.env.DB_USER)
-
+console.log(process.env.DB_USER);
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri =
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.74novyu.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.74novyu.mongodb.net/?retryWrites=true&w=majority`;
 
 console.log(uri);
 
@@ -37,21 +32,21 @@ async function run() {
         // Connect to the "insertDB" database and access its "haiku" collection
         const database = client.db("mashTechDB");
         const productCollection = database.collection("products");
+        const blogCollection = database.collection("blogs");
         const cartCollection = database.collection("carts");
 
-
-        app.get("/products", async(req, res) => {
+        app.get("/products", async (req, res) => {
             const cursor = productCollection.find();
             const result = await cursor.toArray();
             res.send(result);
-        })
+        });
 
-        app.get("/products/:id", async(req, res) => {
+        app.get("/products/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await productCollection.findOne(query);
             res.send(result);
-        })
+        });
 
         app.post("/products", async (req, res) => {
             const newProduct = req.body;
@@ -60,9 +55,9 @@ async function run() {
             res.send(result);
         });
 
-        app.put('/products/:id', async(req, res) => {
+        app.put("/products/:id", async (req, res) => {
             const id = req.params.id;
-            const query = { _id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const options = { upsert: true };
             const updatedProduct = req.body;
             const product = {
@@ -75,30 +70,47 @@ async function run() {
                     image: updatedProduct.image,
                 },
             };
-            const result = await productCollection.updateOne(query, product, options)
+            const result = await productCollection.updateOne(
+                query,
+                product,
+                options
+            );
             res.send(result);
-        })
+        });
 
-        app.get("/carts", async(req, res) => {
+        app.get("/carts", async (req, res) => {
             const cursor = cartCollection.find();
             const result = await cursor.toArray();
             res.send(result);
-        })
+        });
 
-        app.post("/carts", async(req, res) => {
+        app.post("/carts", async (req, res) => {
             const newCart = req.body;
             console.log(newCart);
             const result = await cartCollection.insertOne(newCart);
             res.send(result);
-        })
+        });
 
-        app.delete("/carts/:id", async(req, res) => {
+        app.delete("/carts/:id", async (req, res) => {
             const id = req.params.id;
             console.log(id);
-            const query = {_id: `${id}`};
+            const query = { _id: `${id}` };
             const result = await cartCollection.deleteOne(query);
             res.send(result);
-        })
+        });
+
+        app.post("/blogs", async (req, res) => {
+            const newBlog = req.body;
+            console.log(newBlog);
+            const result = await blogCollection.insertOne(newBlog);
+            res.send(result);
+        });
+
+        app.get("/blogs", async (req, res) => {
+            const cursor = blogCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
@@ -112,12 +124,10 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-app.get('/', (req, res) => {
-    res.send('mash tech server is running');
-})
+app.get("/", (req, res) => {
+    res.send("mash tech server is running");
+});
 
 app.listen(port, () => {
     console.log(`mash tech server is running from port: ${port}`);
-})
-
+});
