@@ -34,6 +34,8 @@ async function run() {
         const productCollection = database.collection("products");
         const blogCollection = database.collection("blogs");
         const cartCollection = database.collection("carts");
+        const upcomingCollection = database.collection("upcoming");
+        const testimonialCollection = database.collection("testimonials");
 
         app.get("/products", async (req, res) => {
             const cursor = productCollection.find();
@@ -99,6 +101,7 @@ async function run() {
             res.send(result);
         });
 
+        //blogs
         app.post("/blogs", async (req, res) => {
             const newBlog = req.body;
             console.log(newBlog);
@@ -108,6 +111,34 @@ async function run() {
 
         app.get("/blogs", async (req, res) => {
             const cursor = blogCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        //testimonials
+        app.post("/testimonials", async (req, res) => {
+            const newTestimonial = req.body;
+            console.log(newTestimonial);
+            const result = await testimonialCollection.insertOne(newTestimonial);
+            res.send(result);
+        });
+
+        app.get("/testimonials", async (req, res) => {
+            const cursor = testimonialCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        //upcoming
+        app.post("/upcoming", async (req, res) => {
+            const upcoming = req.body;
+            console.log(upcoming);
+            const result = await upcomingCollection.insertOne(upcoming);
+            res.send(result);
+        });
+
+        app.get("/upcoming", async (req, res) => {
+            const cursor = upcomingCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         });
