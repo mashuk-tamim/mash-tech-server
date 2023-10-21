@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const app = express();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 
 //middleware
@@ -10,7 +11,7 @@ app.use(express.json());
 
 console.log(process.env.DB_USER);
 
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+// const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.74novyu.mongodb.net/?retryWrites=true&w=majority`;
 
 console.log(uri);
@@ -35,7 +36,9 @@ async function run() {
         const blogCollection = database.collection("blogs");
         const cartCollection = database.collection("carts");
         const upcomingCollection = database.collection("upcoming");
+        const brandCollection = database.collection("brands");
         const testimonialCollection = database.collection("testimonials");
+        
 
         app.get("/products", async (req, res) => {
             const cursor = productCollection.find();
@@ -119,7 +122,9 @@ async function run() {
         app.post("/testimonials", async (req, res) => {
             const newTestimonial = req.body;
             console.log(newTestimonial);
-            const result = await testimonialCollection.insertOne(newTestimonial);
+            const result = await testimonialCollection.insertOne(
+                newTestimonial
+            );
             res.send(result);
         });
 
@@ -139,6 +144,20 @@ async function run() {
 
         app.get("/upcoming", async (req, res) => {
             const cursor = upcomingCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        //brands
+        app.post("/brands", async (req, res) => {
+            const brands = req.body;
+            console.log(brands);
+            const result = await brandCollection.insertOne(brands);
+            res.send(result);
+        });
+
+        app.get("/brands", async (req, res) => {
+            const cursor = brandCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         });
